@@ -1,0 +1,12 @@
+
+<html>
+ <h2>Σύνδεση Χρήστη</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label for="username">Όνομα Χρήστη:</label><br>
+    <input type="text" id="username" name="username" required><br><br>
+    <label for="password">Κωδικός:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+    <button type="submit">Σύνδεση</button>
+  </form>
+</html>

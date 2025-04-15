@@ -1,0 +1,91 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Προϊόντα Καταστήματος</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light p-4">
+
+  <div class="container">
+    <h1 class="mb-4 text-center">Προϊόντα Καταστήματος</h1>
+
+    <!-- Φίλτρο κατηγορίας -->
+    <form method="GET" class="row mb-4">
+      <div class="col-md-6 offset-md-3">
+        <div class="input-group">
+          <select name="category" class="form-select">
+            <option value="">Όλες οι κατηγορίες</option>
+            <option value="PC Modding">PC Modding</option>
+            <option value="Περιφερειακά">Περιφερειακά</option>
+            <option value="Gaming Περιφερεικά">Gaming Περιφερεικά</option>
+            <option value="PC Hardware">PC Hardware</option>
+            <option value="Τροφοδοτικά Υπολογιστή">Τροφοδοτικά Υπολογιστή</option>
+            <option value="Δίσκοι">Δίσκοι</option6>
+            {% for category in categories %}
+              <option value="{{ category.name }}" {% if selected_category == category.value %}selected{% endif %}>
+                {{ category.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6 offset-md-3">
+        <select name="brand" class="form-select">
+          <option value="">Όλες οι μάρκες</option>
+          <option value="Razer">Razer</option>
+          <option value="Gigabyte">Gigabyte</option>
+          <option value="PowerTech">PowerTech</option>
+          <option value="LamTech">LamTech</option>
+          <option value="Sony">Sony</option>
+          <option value="Ryzen">Ryzen</option>
+          <option value="Crucial">Crucial</option>
+          <option value="Deepcool">Deepcool</option>
+          {% for brand in brands %}
+            <option value="{{ brand.name }}" {% if selected_brand == brand.name %}selected{% endif %}>
+              {{ brand.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 text-center mt-3">
+        <button type="submit" class="btn btn-primary">Φίλτρο</button>
+      </div>
+    </form>
+
+    <!-- Πίνακας προϊόντων -->
+    <table class="table table-striped table-bordered align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Όνομα</th>
+          <th>Κατηγορία Προϊόντος</th>
+          <th>Κατασκευαστής</th>
+          <th>Τιμή (€)</th>
+          <th>Απόθεμα</th>
+          <th>Εικόνα</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>{{product.category}}</td>
+          <td>{{product.manufacturer}}</td>
+          <td>{{ product.price }}</td>
+          <td>{{ product.stock }}</td>
+          <td></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center">Δεν βρέθηκαν προϊόντα σε αυτή την κατηγορία.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+
+</body>
+</html>
