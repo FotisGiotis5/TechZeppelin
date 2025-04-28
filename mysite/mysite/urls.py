@@ -24,8 +24,14 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
-    path('', views.home, name='home' ),
+    path('', views.home, name='home'),
     path('products/', views.product_list , name='product_list'),
     path('signup/', views.signup_view, name='signup'),
-    path('contact/', views.contact, name='contact') 
+    path('contact/', views.contact, name='contact'),
+    path('cart/', views.cart_view, name='cart'), 
+    path('add-to-cart/', views.add_to_cart, name='add_to_cart'),  
+    path('checkout/', views.checkout, name='checkout'),
+    path('payment/', views.process_payment, name='payment'),
+    path('order_history/', views.order_history, name='order_history'),
+    path('clear_cart/', views.clear_cart, name='clear_cart')
 ]

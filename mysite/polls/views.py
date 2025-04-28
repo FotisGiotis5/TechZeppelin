@@ -1,19 +1,39 @@
 
 import json
 
-from .models import Address,Product, ProductCategory
+from .models import Address,Product, ProductCategory,Manufacturer,Order,Cart,OrderItem
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.forms.models import model_to_dict
 from django.contrib.auth import login
+from django.views.decorators.csrf import csrf_exempt
 from polls import models
-from .models import Product
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import SignUpForm
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 
+
+PRODUCTS={
+    1:{'id':1,'name':'Headset','ProductsCategory':'Gaming Περιφερειακά','Manufacturer':'Razer','price':140.0,'stock':10},
+    2:{'id':2,'name':'Mouse','ProductsCategory':'Περιφερειακά','Manufacturer':'Razer','price':85.0,'stock':10},
+    3:{'id':3,'name':'Keybord','ProductsCategory':'Gaming Περιφερειακά','Manufacturer':'Razer','price':100.0,'stock':10},
+    4:{'id':4,'name':'Πληκτρολόγιο','ProductsCategory':'Περιφερειακά','Manufacturer':'PowerTech','price':10.0,'stock':20},
+    5:{'id':5,'name':'Ποντίκι','ProductsCategory':'Περιφερειακά','Manufacturer':'Lamtech','price':5.0,'stock':20},
+    6:{'id':6,'name':'Ακουστικά','ProductsCategory':'Περιφερειακά','Manufacturer':'Sony','price':8.0,'stock':20},
+    7:{'id':7,'name':'Κάρτες Γραφικών','ProductsCategory':'PC Hardware','Manufacturer':'Gigabyte','price':240.0,'stock':10},
+    8:{'id':8,'name':'Επεξεργαστές','ProductsCategory':'PC Hardware','Manufacturer':'Ryzen','price':150.0,'stock':10},
+    9:{'id':9,'name':'Μητρικές Κάρτες','ProductsCategory':'PC Hardware','Manufacturer':'Gigabyte','price':88.0,'stock':10},
+    10:{'id':10,'name':'Κουτιά Υπολογιστών','ProductsCategory':'Gaming Περιφερειακά','Manufacturer':'PowerTech','price':48.0,'stock':5},
+    11:{'id':11,'name':'Μνήμες RAM','ProductsCategory':'PC Hardware','Manufacturer':'Crucial','price':30.0,'stock':20},
+    12:{'id':12,'name':'Ψύκτρες','ProductsCategory':'PC Modding','Manufacturer':'Deepcool','price':49.0,'stock':10},
+    13:{'id':13,'name':'Σκληροί Δίσκοι SSD','ProductsCategory':'Δίσκοι','Manufacturer':'Gigabyte','price':20.0,'stock':15},
+    14:{'id':14,'name':'Τροφοδοτικά Υπολογιστή','ProductsCategory':'Τροφοδοτικά Υπολογιστή','Manufacturer':'Deepcool','price':55.0,'stock':10},
+    15:{'id':15,'name':'Εσωτερικοί Σκληροί Δίσκοι','ProductsCategory':'Δίσκοι','Manufacturer':'PowerTech','price':27.0,'stock':6},
+    16:{'id':16,'name':'Ανεμιστηράκια','ProductsCategory':'PC Modding','Manufacturer':'Deepcool','price':5.0,'stock':20}
+}
 def address_list(request):
     addresses = Address.objects.all()
     return render(request, "addresses.html", {"addresses": addresses})
@@ -51,12 +71,11 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})  
 
 def product_list(request):
-    category = request.GET.get("category")
-    if category:
-        products = Product.objects.filter(category__name=category)
-    else:
-        products = Product.objects.all()
-    return render(request, 'product_list.html', {'products': products})
+    products = Product.objects.all()  # Ανακτούμε όλα τα προϊόντα από τη βάση
+    context = {
+        'products': products
+    }
+    return render(request, 'products.html', context)
 
 def signup_view(request):
     if request.method == 'POST':
@@ -77,3 +96,106 @@ def home_view(request):
 
 def contact(request):
     return render(request, 'contact.html')
+
+def checkout(request):
+    cart = request.session.get('cart', [])
+    
+    if not cart:
+        return redirect('cart')  # Αν το καλάθι είναι άδειο, επιστρέφει στο καλάθι
+    
+    # Υπολογισμός του συνολικού ποσού
+    total_price = sum(item['price'] * item['quantity'] for item in cart)
+    
+    return render(request, 'checkout.html', {
+        'cart': cart,
+        'total_price': total_price,
+    })
+
+def add_to_cart(request):
+    if request.method == 'POST':
+        selected_products = request.POST.getlist('products')  # Τα ID των προϊόντων από τα checkbox
+        cart = request.session.get('cart', [])
+        for product_id in selected_products:
+            product = PRODUCTS.get(int(product_id))
+            if product:
+               cart.append({'id':product['id'],
+                            'name': product['name'],
+                            'category': product['ProductsCategory'],   
+                            'manufacturer': product['Manufacturer'],
+                            'price':product['price'],
+                            'quantity':1})
+        request.session['cart']=cart
+        return redirect('cart')
+    else:
+        return HttpResponse('Λάθος μέθοδος')
+   
+def cart_view(request):
+    cart = request.session.get('cart', [])
+    total_price=0
+    print(cart)
+    if isinstance(cart,list):
+        try:
+           for product in cart:
+                if isinstance(product,dict):
+                  total_price+=product['price'] 
+                else:
+                   print("Το product δεν είναι λεξικό")
+        except Exception as e:
+            print("Λάθος στον υπολογισμό",e)
+    else:
+        print("Το cart είναι",type(cart),"και όχι λίστα")
+   
+    return render(request, 'cart.html', {'cart': cart, 'total_price': total_price})
+
+
+def products_view(request):
+    return render(request, 'product_list.html', {'products': PRODUCTS})
+
+def checkout_view(request):
+    if request.method == "POST":
+        full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        
+        # Αν έχεις μοντέλο, αποθηκεύεις:
+        # Order.objects.create(full_name=full_name, email=email, phone=phone, address=address)
+
+        messages.success(request, "Η παραγγελία σας καταχωρήθηκε επιτυχώς!")
+        return redirect('checkout')  # ή σε μία 'success' σελίδα αν θες
+
+@login_required
+def order_history(request):
+    # Εδώ μπορείς να ανακτήσεις τις παραγγελίες του χρήστη από τη βάση δεδομένων
+    orders = Order.objects.filter(user=request.user)
+    
+    return render(request, 'order_history.html', {'orders': orders})
+
+def process_payment(request):
+    # Υποθέτουμε ότι η πληρωμή έχει ολοκληρωθεί επιτυχώς
+    cart = request.session.get('cart', [])
+    
+    if not cart:
+        return redirect('cart')  # Αν το καλάθι είναι άδειο, επιστρέφει στο καλάθι
+    
+    # Δημιουργία παραγγελίας
+    total_price = sum(item['price'] * item['quantity'] for item in cart)
+    order = Order.objects.create(user=request.user, total_price=total_price)
+    
+    # Δημιουργία των items για την παραγγελία
+    for item in cart:
+        OrderItem.objects.create(order=order, product_id=item['id'], quantity=item['quantity'], price=item['price'])
+    
+    # Αδειάζουμε το καλάθι από τη συνεδρία
+    request.session['cart'] = []
+    
+    # Επιστροφή στη σελίδα προϊόντων ή αλλού
+    return redirect('products')  # Μπορείς να το κατευθύνεις οπουδήποτε θέλεις
+
+def payment(request):
+    return redirect('products')
+
+def clear_cart(request):
+    request.session['cart'] = []
+    return redirect('cart')
+    

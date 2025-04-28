@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="el">
@@ -55,10 +54,13 @@
       </div>
     </form>
 
-    <!-- Πίνακας προϊόντων -->
-    <table class="table table-striped table-bordered align-middle">
+    <form method="POST" action="{% url 'add_to_cart' %}">
+      {% csrf_token %}
+
+     <table class="table table-striped table-bordered align-middle">
       <thead class="table-dark">
         <tr>
+          <th>Επιλογή</th>
           <th>Όνομα</th>
           <th>Κατηγορία Προϊόντος</th>
           <th>Κατασκευαστής</th>
@@ -70,6 +72,9 @@
       <tbody>
         {% for product in products %}
         <tr>
+          <td>
+            <input type="checkbox" name="products" value="{{ product.id }}">
+          </td>
           <td>{{ product.name }}</td>
           <td>{{product.category}}</td>
           <td>{{product.manufacturer}}</td>
@@ -83,8 +88,11 @@
         </tr>
         {% endfor %}
       </tbody>
-    </table>
-
+     </table>
+     <div class="col-12 text-center mt-3">
+      <button type="submit" class="btn btn-success">Προσθήκη στο Καλάθι</button>
+     </div>
+    </form>
   </div>
 
 </body>
