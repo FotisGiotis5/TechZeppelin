@@ -1,0 +1,36 @@
+<div class="container py-5">
+    <h2>Ιστορικό Παραγγελιών</h2>
+
+    <!-- Έλεγχος για παραγγελίες -->
+    {% if orders %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Αριθμός Παραγγελίας</th>
+                <th>Ημερομηνία</th>
+                <th>Συνολικό Ποσό</th>
+                <th>Κατάσταση</th>
+                <th>Λεπτομέρειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.date }}</td>
+                    <td>${{ order.price }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>
+                        <a href="{% url 'order_detail' %}" class="btn btn-info btn-sm">Λεπτομέρειες</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Δεν έχετε πραγματοποιήσει καμία παραγγελία ακόμα.</p>
+    {% endif %}
+
+    <!-- Κουμπί για Νέα Παραγγελία -->
+    <a href="/products" class="btn btn-success mt-4">Δημιουργία Νέας Παραγγελίας</a>
+</div>

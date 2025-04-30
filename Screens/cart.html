@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Καλάθι Αγορών</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f8f8f8;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            margin-right: 10%;
+            margin-top: 20px;
+        }
+        .btn-checkout {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            padding: 12px;
+            text-align: center;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btn-checkout:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Το Καλάθι Σας</h1>
+    <form method="post">
+      <table>
+        <thead>
+            <tr>
+                <th>Όνομα</th>
+                <th>Κατηγορία Προϊόντος</th>
+                <th>Κατασκευαστής</th>
+                <th>Τιμή</th>
+                <th>Ποσότητα</th>
+                <th>Εικόνα</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in cart %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category}}</td>
+                    <td>{{ product.manufacturer}}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.image}}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">Το καλάθι σας είναι άδειο!</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    
+      <div class="total">
+        Σύνολο: €{{ total_price }}
+      </div>
+      <div class="col-12 text-center mt-3"></div>
+         <a href="{% url 'checkout' %}" class="btn-checkout">Ολοκλήρωση Αγοράς</a>
+         <a href="{% url 'clear_cart' %}" class="btn btn-danger">Άδειασμα Καλαθιού</a>
+         <a href="{% url 'product_list' %}">Συνέχισε τις αγορές</a>
+      </div>
+    </form>
+</body>
+</html>
