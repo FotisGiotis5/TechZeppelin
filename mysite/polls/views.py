@@ -1,6 +1,4 @@
-
 import json
-
 from .models import Address,Product, ProductCategory,Manufacturer,Order,Cart,OrderItem
 from django.http.response import HttpResponse
 from django.shortcuts import render,redirect
@@ -11,28 +9,27 @@ from polls import models
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import SignUpForm
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 
 
 PRODUCTS={
-    1:{'id':1,'name':'Headset','ProductsCategory':'Gaming Περιφερειακά','Manufacturer':'Razer','price':140.0,'stock':10},
-    2:{'id':2,'name':'Mouse','ProductsCategory':'Περιφερειακά','Manufacturer':'Razer','price':85.0,'stock':10},
-    3:{'id':3,'name':'Keybord','ProductsCategory':'Gaming Περιφερειακά','Manufacturer':'Razer','price':100.0,'stock':10},
-    4:{'id':4,'name':'Πληκτρολόγιο','ProductsCategory':'Περιφερειακά','Manufacturer':'PowerTech','price':10.0,'stock':20},
-    5:{'id':5,'name':'Ποντίκι','ProductsCategory':'Περιφερειακά','Manufacturer':'Lamtech','price':5.0,'stock':20},
-    6:{'id':6,'name':'Ακουστικά','ProductsCategory':'Περιφερειακά','Manufacturer':'Sony','price':8.0,'stock':20},
-    7:{'id':7,'name':'Κάρτες Γραφικών','ProductsCategory':'PC Hardware','Manufacturer':'Gigabyte','price':240.0,'stock':10},
-    8:{'id':8,'name':'Επεξεργαστές','ProductsCategory':'PC Hardware','Manufacturer':'Ryzen','price':150.0,'stock':10},
-    9:{'id':9,'name':'Μητρικές Κάρτες','ProductsCategory':'PC Hardware','Manufacturer':'Gigabyte','price':88.0,'stock':10},
-    10:{'id':10,'name':'Κουτιά Υπολογιστών','ProductsCategory':'Gaming Περιφερειακά','Manufacturer':'PowerTech','price':48.0,'stock':5},
-    11:{'id':11,'name':'Μνήμες RAM','ProductsCategory':'PC Hardware','Manufacturer':'Crucial','price':30.0,'stock':20},
-    12:{'id':12,'name':'Ψύκτρες','ProductsCategory':'PC Modding','Manufacturer':'Deepcool','price':49.0,'stock':10},
-    13:{'id':13,'name':'Σκληροί Δίσκοι SSD','ProductsCategory':'Δίσκοι','Manufacturer':'Gigabyte','price':20.0,'stock':15},
-    14:{'id':14,'name':'Τροφοδοτικά Υπολογιστή','ProductsCategory':'Τροφοδοτικά Υπολογιστή','Manufacturer':'Deepcool','price':55.0,'stock':10},
-    15:{'id':15,'name':'Εσωτερικοί Σκληροί Δίσκοι','ProductsCategory':'Δίσκοι','Manufacturer':'PowerTech','price':27.0,'stock':6},
-    16:{'id':16,'name':'Ανεμιστηράκια','ProductsCategory':'PC Modding','Manufacturer':'Deepcool','price':5.0,'stock':20}
+    1:{'id':1,'name':'Headset','ProductsCategory':'Gaming Περιφερειακά','Manufacturer':'Razer','price':140.0,'stock':10,'image':'Headset.jpg'},
+    2:{'id':2,'name':'Mouse','ProductsCategory':'Περιφερειακά','Manufacturer':'Razer','price':85.0,'stock':10,'image':'Mouse.jpg'},
+    3:{'id':3,'name':'Keybord','ProductsCategory':'Gaming Περιφερειακά','Manufacturer':'Razer','price':100.0,'stock':10,'image':'Keybord.jpg'},
+    4:{'id':4,'name':'Πληκτρολόγιο','ProductsCategory':'Περιφερειακά','Manufacturer':'PowerTech','price':10.0,'stock':20,'image':'Keybord1.jpg'},
+    5:{'id':5,'name':'Ποντίκι','ProductsCategory':'Περιφερειακά','Manufacturer':'Lamtech','price':5.0,'stock':20,'image':'Mouse1.jpg'},
+    6:{'id':6,'name':'Ακουστικά','ProductsCategory':'Περιφερειακά','Manufacturer':'Sony','price':8.0,'stock':20,'image':'Headset1.jpg'},
+    7:{'id':7,'name':'Κάρτες Γραφικών','ProductsCategory':'PC Hardware','Manufacturer':'Gigabyte','price':240.0,'stock':10,'image':'GPU.jpg'},
+    8:{'id':8,'name':'Επεξεργαστές','ProductsCategory':'PC Hardware','Manufacturer':'Ryzen','price':150.0,'stock':10,'image':'CPU.jpg'},
+    9:{'id':9,'name':'Μητρικές Κάρτες','ProductsCategory':'PC Hardware','Manufacturer':'Gigabyte','price':88.0,'stock':10,'image':'Motherboard.jpg'},
+    10:{'id':10,'name':'Κουτιά Υπολογιστών','ProductsCategory':'Gaming Περιφερειακά','Manufacturer':'PowerTech','price':48.0,'stock':5,'image':'PC.jpg'},
+    11:{'id':11,'name':'Μνήμες RAM','ProductsCategory':'PC Hardware','Manufacturer':'Crucial','price':30.0,'stock':20,'image':'Ram.jpg'},
+    12:{'id':12,'name':'Ψύκτρες','ProductsCategory':'PC Modding','Manufacturer':'Deepcool','price':49.0,'stock':10,'image':'Air.jpg'},
+    13:{'id':13,'name':'Σκληροί Δίσκοι SSD','ProductsCategory':'Δίσκοι','Manufacturer':'Gigabyte','price':20.0,'stock':15,'image':'SSD.jpg'},
+    14:{'id':14,'name':'Τροφοδοτικά Υπολογιστή','ProductsCategory':'Τροφοδοτικά Υπολογιστή','Manufacturer':'Deepcool','price':55.0,'stock':10,'image':'PSU.jpg'},
+    15:{'id':15,'name':'Εσωτερικοί Σκληροί Δίσκοι','ProductsCategory':'Δίσκοι','Manufacturer':'PowerTech','price':27.0,'stock':6,'image':'HDD.jpg'},
+    16:{'id':16,'name':'Ανεμιστηράκια','ProductsCategory':'PC Modding','Manufacturer':'Deepcool','price':5.0,'stock':20,'image':'Fan.jpg'}
 }
 def address_list(request):
     addresses = Address.objects.all()
@@ -62,20 +59,38 @@ def home(request):
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
+        print("Form data:", request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # Αυτοματοποιημένη σύνδεση μετά την εγγραφή
-            return redirect('home')  # Αντικατάστησε με την URL της αρχικής σου σελίδας
+            login(request, user)
+            print("User saved and logged in:", user)
+            return redirect('home')
+        else:
+            print("Form errors:", form.errors)
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})  
+    
+    return render(request, 'signup.html', {'form': form})
 
+@login_required
 def product_list(request):
     products = Product.objects.all()  # Ανακτούμε όλα τα προϊόντα από τη βάση
     context = {
         'products': products
     }
     return render(request, 'products.html', context)
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('/products')
+        else:
+            return render(request, 'login.html', {'error': 'Λανθασμένα στοιχεία σύνδεσης'})
+    return render(request, 'login.html')
 
 def signup_view(request):
     if request.method == 'POST':

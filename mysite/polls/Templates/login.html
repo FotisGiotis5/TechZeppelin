@@ -1,8 +1,11 @@
 
 <html>
- <h2>Σύνδεση Χρήστη</h2>
+  <h2>Σύνδεση Χρήστη</h2>
   <form method="post">
     {% csrf_token %}
+    {% if error %}
+      <p style="color:red;">{{ error }}</p>
+    {% endif %}
     <label for="username">Όνομα Χρήστη:</label><br>
     <input type="text" id="username" name="username" required><br><br>
     <label for="password">Κωδικός:</label><br>
