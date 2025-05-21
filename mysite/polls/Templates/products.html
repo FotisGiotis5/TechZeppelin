@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="el">
 <head>
@@ -7,107 +6,128 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light p-4">
-    <nav class="navbar navbar-expand-lg navbar-white bg-white">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">TechZeppelin</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="/">Αρχική</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/products">Προϊόντα</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/contact">Επικοινωνία</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/order_history">Ιστορικό Παραγγελιών</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg navbar-white bg-white">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">TechZeppelin</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/">Αρχική</a></li>
+          <li class="nav-item"><a class="nav-link" href="/products">Προϊόντα</a></li>
+          <li class="nav-item"><a class="nav-link" href="/contact">Επικοινωνία</a></li>
+          <li class="nav-item"><a class="nav-link" href="/order_history">Ιστορικό Παραγγελιών</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
   <div class="container">
     <h1 class="mb-4 text-center">Προϊόντα Καταστήματος</h1>
 
-    <!-- Φίλτρο κατηγορίας -->
-    <form method="GET" class="row mb-4">
-      <div class="col-md-6 offset-md-3">
-        <div class="input-group">
-          <select name="category" class="form-select">
+    <!-- JavaScript Φίλτρα -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label for="categoryFilter" class="form-label">Κατηγορία</label>
+        <select id="categoryFilter" class="form-select">
             <option value="">Όλες οι κατηγορίες</option>
             <option value="PC Modding">PC Modding</option>
             <option value="Περιφερειακά">Περιφερειακά</option>
             <option value="Gaming Περιφερεικά">Gaming Περιφερεικά</option>
             <option value="PC Hardware">PC Hardware</option>
             <option value="Τροφοδοτικά Υπολογιστή">Τροφοδοτικά Υπολογιστή</option>
-            <option value="Δίσκοι">Δίσκοι</option6>
+            <option value="Δίσκοι">Δίσκοι</option>
             {% for category in categories %}
-              <option value="{{ category.name }}" {% if selected_category == category.value %}selected{% endif %}>
-                {{ category.name }}
-              </option>
+              <option value="{{ category.name }}">{{ category.name }}</option>
             {% endfor %}
-          </select>
-        </div>
-      </div>
-      <div class="col-md-6 offset-md-3">
-        <select name="brand" class="form-select">
-          <option value="">Όλες οι μάρκες</option>
-          <option value="Razer">Razer</option>
-          <option value="Gigabyte">Gigabyte</option>
-          <option value="PowerTech">PowerTech</option>
-          <option value="LamTech">LamTech</option>
-          <option value="Sony">Sony</option>
-          <option value="Ryzen">Ryzen</option>
-          <option value="Crucial">Crucial</option>
-          <option value="Deepcool">Deepcool</option>
-          {% for brand in brands %}
-            <option value="{{ brand.name }}" {% if selected_brand == brand.name %}selected{% endif %}>
-              {{ brand.name }}
-            </option>
-          {% endfor %}
         </select>
       </div>
-      <div class="col-12 text-center mt-3">
-        <button type="submit" class="btn btn-primary">Φίλτρο</button>
-      </div>
-    </form>
 
+      <div class="col-md-6">
+        <label for="brandFilter" class="form-label">Μάρκα</label>
+        <select id="brandFilter" class="form-select">
+            <option value="">Όλες οι μάρκες</option>
+            <option value="Razer">Razer</option>
+            <option value="Gigabyte">Gigabyte</option>
+            <option value="PowerTech">PowerTech</option>
+            <option value="LamTech">LamTech</option>
+            <option value="Sony">Sony</option>
+            <option value="Ryzen">Ryzen</option>
+            <option value="Crucial">Crucial</option>
+            <option value="Deepcool">Deepcool</option>
+            {% for brand in brands %}
+              <option value="{{ brand.name }}">{{ brand.name }}</option>
+            {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <!-- Πίνακας προϊόντων -->
     <form method="POST" action="{% url 'add_to_cart' %}">
       {% csrf_token %}
-
-     <table class="table table-striped table-bordered align-middle">
-      <thead class="table-dark">
-        <tr>
-          <th>Επιλογή</th>
-          <th>Όνομα</th>
-          <th>Κατηγορία Προϊόντος</th>
-          <th>Κατασκευαστής</th>
-          <th>Τιμή (€)</th>
-          <th>Απόθεμα</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for product in products %}
-        <tr>
-          <td>
-            <input type="checkbox" name="products" value="{{ product.id }}">
-          </td>
-          <td>{{ product.name }}</td>
-          <td>{{product.category}}</td>
-          <td>{{product.manufacturer}}</td>
-          <td>{{ product.price }}</td>
-          <td>{{ product.stock }}</td>>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="5" class="text-center">Δεν βρέθηκαν προϊόντα σε αυτή την κατηγορία.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-     </table>
-     <div class="col-12 text-center mt-3">
-      <button type="submit" class="btn btn-success">Προσθήκη στο Καλάθι</button>
-     </div>
+      <table class="table table-striped table-bordered align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Επιλογή</th>
+            <th>Όνομα</th>
+            <th>Κατηγορία Προϊόντος</th>
+            <th>Κατασκευαστής</th>
+            <th>Τιμή (€)</th>
+            <th>Απόθεμα</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+          <tr class="product-row"
+              data-category="{{ product.category.name }}"
+              data-brand="{{ product.manufacturer.name }}">
+            <td><input type="checkbox" name="products" value="{{ product.id }}"></td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.category.name }}</td>
+            <td>{{ product.manufacturer.name }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.stock }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center">Δεν βρέθηκαν προϊόντα.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="col-12 text-center mt-3">
+        <button type="submit" class="btn btn-success">Προσθήκη στο Καλάθι</button>
+      </div>
     </form>
   </div>
 
+  <!-- JS για τα φίλτρα -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const categoryFilter = document.getElementById('categoryFilter');
+      const brandFilter = document.getElementById('brandFilter');
+      const productRows = document.querySelectorAll('.product-row');
+
+      function filterProducts() {
+        const selectedCategory = categoryFilter.value.toLowerCase();
+        const selectedBrand = brandFilter.value.toLowerCase();
+
+        productRows.forEach(row => {
+          const productCategory = row.dataset.category?.toLowerCase() || '';
+          const productBrand = row.dataset.brand?.toLowerCase() || '';
+
+          const matchesCategory = !selectedCategory || productCategory === selectedCategory;
+          const matchesBrand = !selectedBrand || productBrand === selectedBrand;
+
+          row.style.display = (matchesCategory && matchesBrand) ? '' : 'none';
+        });
+      }
+
+      categoryFilter.addEventListener('change', filterProducts);
+      brandFilter.addEventListener('change', filterProducts);
+    });
+  </script>
 </body>
 </html>
