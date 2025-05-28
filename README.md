@@ -23,7 +23,5 @@
 ## 🔧 Εγκατάσταση
 
 1. **Κλωνοποίησε το αποθετήριο**
+2. **Κάνε download το αποθετήριο και ύστερα drag and drop στο VSc**
 
-```bash
-git clone https://github.com/username/django-ecommerce-app.git
-cd django-ecommerce-app
