@@ -1,4 +1,8 @@
-[Σύντομη περιγραφή της εφαρμογής και των στόχων της.docx](https://github.com/user-attachments/files/20034679/default.docx)
+# 🚀 TechZeppelin
+
+---
+
+## "Shop Hard, Rock Harder — The Best Eshop in This Dimension"! 👋
 
 # 🛒 Django E-Commerce App
 
