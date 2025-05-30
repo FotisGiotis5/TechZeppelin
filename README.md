@@ -33,6 +33,7 @@ git clone https://github.com/FotisGiotis5/TechZeppelin.git
 2. Δημιούργησε και ενεργοποίησε ένα virtual environment
 
 python -m venv venv
+
 venv\Scripts\activate   # Για Windows
 
 3. Εγκατάσταση των εξαρτήσεων
