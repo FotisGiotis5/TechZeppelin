@@ -33,15 +33,19 @@ git clone https://github.com/FotisGiotis5/TechZeppelin.git
 2. Δημιούργησε και ενεργοποίησε ένα virtual environment
 
 python -m venv venv
-venv\Scripts\activate     # Για Windows
+venv\Scripts\activate   # Για Windows
+
 3. Εγκατάσταση των εξαρτήσεων
 
 pip install -r requirements.txt
+
 4. Εκτέλεσε τις μεταναστεύσεις της βάσης δεδομένων
 
 python manage.py migrate
+
 5. Εκκίνηση του development server
 
 python manage.py runserver
+
 6. Πρόσβαση στην εφαρμογή
 Άνοιξε τον browser σου και πήγαινε στη διεύθυνση: http://localhost:8000
