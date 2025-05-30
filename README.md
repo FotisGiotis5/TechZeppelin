@@ -48,4 +48,5 @@ python manage.py migrate
 python manage.py runserver
 
 6. Πρόσβαση στην εφαρμογή
+   
 Άνοιξε τον browser σου και πήγαινε στη διεύθυνση: http://localhost:8000
