@@ -22,8 +22,10 @@ from polls import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path('login/', auth_views.LoginView.as_view(
+        template_name='login.html', next_page="/products/"), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/login/'),
+         name='logout'),
     path('', views.home, name='home'),
     path('products/', views.product_list , name='product_list'),
     path('signup/', views.signup_view, name='signup'),
