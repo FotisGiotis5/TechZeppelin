@@ -162,7 +162,6 @@ def cart_view(request):
    
     return render(request, 'cart.html', {'cart': cart, 'total_price': total_price})
 
-
 def products_view(request):
     return render(request, 'product_list.html', {'products': PRODUCTS})
 
@@ -179,12 +178,16 @@ def checkout_view(request):
         messages.success(request, "Η παραγγελία σας καταχωρήθηκε επιτυχώς!")
         return redirect('checkout')  # ή σε μία 'success' σελίδα αν θες
 
-@login_required
+
 def order_history(request):
-    # Εδώ μπορείς να ανακτήσεις τις παραγγελίες του χρήστη από τη βάση δεδομένων
-    orders = Order.objects.filter(user=request.user)
-    
-    return render(request, 'order_history.html', {'orders': orders})
+    orders = Order.objects.filter(user=request.user).order_by('-id')
+    orders_with_items = []
+
+    for order in orders:
+        items = OrderItem.objects.filter(order=order)
+        orders_with_items.append({'order': order, 'items': items})
+
+    return render(request, 'order_history.html', {'orders_with_items': orders_with_items})
 
 def process_payment(request):
     # Υποθέτουμε ότι η πληρωμή έχει ολοκληρωθεί επιτυχώς
@@ -205,7 +208,7 @@ def process_payment(request):
     request.session['cart'] = []
     
     # Επιστροφή στη σελίδα προϊόντων ή αλλού
-    return redirect('products')  # Μπορείς να το κατευθύνεις οπουδήποτε θέλεις
+    return redirect('order_history')  # Μπορείς να το κατευθύνεις οπουδήποτε θέλεις
 
 def payment(request):
     return redirect('products')
