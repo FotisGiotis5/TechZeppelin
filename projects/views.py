@@ -55,23 +55,6 @@ def get_products(request):
 def home(request):
     return render(request, 'home.html')  
 
-
-def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        print("Form data:", request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            print("User saved and logged in:", user)
-            return redirect('home')
-        else:
-            print("Form errors:", form.errors)
-    else:
-        form = SignUpForm()
-    
-    return render(request, 'signup.html', {'form': form})
-
 @login_required
 def product_list(request):
     products = Product.objects.all()  # Ανακτούμε όλα τα προϊόντα από τη βάση
@@ -209,9 +192,6 @@ def process_payment(request):
     
     # Επιστροφή στη σελίδα προϊόντων ή αλλού
     return redirect('order_history')  # Μπορείς να το κατευθύνεις οπουδήποτε θέλεις
-
-def payment(request):
-    return redirect('products')
 
 def clear_cart(request):
     request.session['cart'] = []
