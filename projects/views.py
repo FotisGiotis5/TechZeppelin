@@ -1,15 +1,13 @@
-import json
-from .models import Address,Product, ProductCategory,Manufacturer,Order,Cart,OrderItem
+from .models import Address,Product,Order,OrderItem
 from django.http.response import HttpResponse
 from django.shortcuts import render,redirect
-from django.forms.models import model_to_dict
 from django.contrib.auth import login
-from django.views.decorators.csrf import csrf_exempt
 from polls import models
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import SignUpForm
 from django.contrib.auth.decorators import login_required
+
 
 
 
