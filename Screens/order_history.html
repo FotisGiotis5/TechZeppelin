@@ -24,7 +24,7 @@
         {% for entry in orders_with_items %}
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-light">
-                    <strong class="text-danger">Παραγγελία #{{ entry.order.id }}</strong> 
+                    <strong class="text-danger">Παραγγελία #{{ forloop.counter }}</strong> 
                     <span class="float-end fw-bold">Σύνολο: €{{ entry.order.total_price }}</span>
                 </div>
                 <div class="card-body">
